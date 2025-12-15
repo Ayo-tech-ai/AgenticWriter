@@ -10,7 +10,7 @@ nest_asyncio.apply()
 # Import from modules
 from utils.session_manager import initialize_session_state, clear_session_state
 from utils.formatters import clean_agent_response
-from ui.sidebar import render_sidebar, get_api_keys
+from ui.sidebar import render_sidebar
 from ui.main_content import render_main_content, render_platform_outputs, render_history, render_footer
 from config.constants import CUSTOM_CSS
 from pipeline.pipeline_creator import create_multi_platform_pipeline
@@ -33,18 +33,25 @@ initialize_session_state()
 # Render sidebar
 render_sidebar()
 
-# Sidebar buttons and logic
-with st.sidebar:
-    # Initialize button
-    if st.button("🚀 **Initialize All Agents**", type="primary", use_container_width=True):
-        google_api_key, groq_api_key = get_api_keys()
-        
-        if google_api_key and groq_api_key:
+# Handle initialization when button is clicked
+if st.session_state.get('initialize_clicked', False):
+    # Get API keys from session state
+    google_api_key = st.session_state.get('google_api_key_input', '')
+    groq_api_key = st.session_state.get('groq_api_key_input', '')
+    
+    if google_api_key and groq_api_key:
+        with st.sidebar:
             with st.spinner("Setting up 4 specialized agents..."):
                 try:
                     # Set API keys
                     os.environ["GOOGLE_API_KEY"] = google_api_key
                     os.environ["GROQ_API_KEY"] = groq_api_key
+                    
+                    # Import ADK components (ensure they're imported after setting keys)
+                    from google.adk.agents import Agent, SequentialAgent
+                    from google.adk.models.google_llm import Gemini
+                    from google.adk.models.lite_llm import LiteLlm
+                    from google.adk.tools.google_search_tool import GoogleSearchTool
                     
                     # Create pipeline
                     pipeline_agent = create_multi_platform_pipeline()
@@ -60,19 +67,18 @@ with st.sidebar:
                     
                 except Exception as e:
                     st.error(f"❌ Setup failed: {str(e)}")
-        else:
+    else:
+        with st.sidebar:
             st.warning("Please enter both API keys")
     
-    # Clear button
-    if st.button("🗑️ **Clear All**", use_container_width=True):
-        clear_session_state()
-        st.rerun()
+    # Clear the flag
+    st.session_state.initialize_clicked = False
 
 # Render main content
 research_topic, linkedin_enabled, facebook_enabled, whatsapp_enabled = render_main_content()
 
 # Generate button
-if st.button("🚀 **Generate All Platform Content**", type="primary", use_container_width=True):
+if st.button("🚀 **Generate All Platform Content**", type="primary", use_container_width=True, key="generate_button"):
     if not st.session_state.get('agents_initialized', False):
         st.warning("Please initialize the pipeline first (sidebar)")
     elif not research_topic.strip():
