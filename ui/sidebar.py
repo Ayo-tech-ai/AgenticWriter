@@ -1,4 +1,4 @@
-# ui/sidebar.py
+# ui/sidebar.py - UPDATED
 import streamlit as st
 import re
 from utils.formatters import clean_agent_response
@@ -7,43 +7,54 @@ from config.constants import EXAMPLE_TOPICS
 def render_sidebar():
     """Render the entire sidebar UI."""
     with st.sidebar:
-        st.markdown("### ⚙️ **API Configuration**")
+        # Only show manual API inputs if secrets weren't loaded
+        if not st.session_state.get('secrets_initialized', True):
+            st.markdown("### ⚙️ **Manual API Configuration**")
+            st.caption("(Secrets not loaded)")
+            
+            # API Keys - create once with unique keys
+            google_api_key = st.text_input(
+                "**Google Gemini API Key:**",
+                type="password",
+                help="Get from: https://aistudio.google.com/app/apikeys",
+                key="sidebar_google_key"
+            )
+            
+            groq_api_key = st.text_input(
+                "**Groq API Key:**",
+                type="password",
+                help="Get from: https://console.groq.com/keys",
+                key="sidebar_groq_key"
+            )
+            
+            # Store keys in session state
+            if google_api_key:
+                st.session_state.google_api_key_input = google_api_key
+            if groq_api_key:
+                st.session_state.groq_api_key_input = groq_api_key
+            
+            # Initialize button - only show if manual input needed
+            if st.button("🚀 **Initialize All Agents**", type="primary", use_container_width=True):
+                # Set a flag that main.py will check
+                st.session_state.initialize_clicked = True
+            
+            st.markdown("---")
         
-        # API Keys - create once with unique keys
-        google_api_key = st.text_input(
-            "**Google Gemini API Key:**",
-            type="password",
-            help="Get from: https://aistudio.google.com/app/apikeys",
-            key="sidebar_google_key"  # Unique key
-        )
-        
-        groq_api_key = st.text_input(
-            "**Groq API Key:**",
-            type="password",
-            help="Get from: https://console.groq.com/keys",
-            key="sidebar_groq_key"  # Unique key
-        )
-        
-        # Store keys in session state
-        if google_api_key:
-            st.session_state.google_api_key_input = google_api_key
-        if groq_api_key:
-            st.session_state.groq_api_key_input = groq_api_key
-        
-        # Initialize button - just sets a flag for main.py to handle
-        if st.button("🚀 **Initialize All Agents**", type="primary", use_container_width=True):
-            # Set a flag that main.py will check
-            st.session_state.initialize_clicked = True
-        
-        st.markdown("---")
-        
-        # Research Output Section
+        # Research Output Section - FIXED: Proper string handling and no key for auto-update
         with st.expander("🔍 **View Research Findings**", expanded=False):
             if st.session_state.current_outputs['research']:
                 clean_research = clean_agent_response(st.session_state.current_outputs['research'])
                 # Remove the context.state assignment line for display
                 clean_research = re.sub(r'context\.state\[.*?\].*', '', clean_research)
-                st.text_area("Research Summary", clean_research[:2000] + "..." if len(clean_research) > 2000 else clean_research, height=250)
+                
+                # FIXED: Proper string concatenation
+                if len(clean_research) > 2000:
+                    display_text = clean_research[:2000] + "..."
+                else:
+                    display_text = clean_research
+                
+                # FIXED: Removed key parameter so it updates automatically
+                st.text_area("Research Summary", display_text, height=250)
             else:
                 st.info("No research generated yet. Run a topic first.")
         
@@ -52,7 +63,6 @@ def render_sidebar():
         
         for example in EXAMPLE_TOPICS:
             if st.button(example, use_container_width=True, key=f"example_{example}"):
-                # Extract topic without emoji
                 topic = example.split(" ", 1)[1] if " " in example else example
                 st.session_state.example_topic = topic
                 st.rerun()
@@ -73,8 +83,9 @@ def render_sidebar():
             </div>
             """, unsafe_allow_html=True)
         
-        # Clear button
+        # Clear button - FIXED: Better clearing logic
         if st.button("🗑️ **Clear All**", use_container_width=True, key="clear_button"):
-            st.session_state.pipeline_history = []
+            # Clear ALL outputs including research
             st.session_state.current_outputs = {'research': '', 'linkedin': '', 'facebook': '', 'whatsapp': ''}
+            st.session_state.pipeline_history = []
             st.rerun()
