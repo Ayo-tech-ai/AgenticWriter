@@ -1,4 +1,4 @@
-# ui/main_content.py - Minor update
+# ui/main_content.py - RESTRUCTURED
 import streamlit as st
 from utils.formatters import format_platform_content, clean_agent_response
 from config.constants import FOOTER_HTML
@@ -24,7 +24,7 @@ def render_main_content():
         value=default_topic,
         placeholder="e.g., 'AI for soil health monitoring' or 'IoT in Nigerian agriculture'",
         help="Focus on agriculture technology topics for best results",
-        key="main_research_input"  # Added unique key
+        key="main_research_input"
     )
     
     # Platform selection
@@ -39,13 +39,36 @@ def render_main_content():
     
     return research_topic, linkedin_enabled, facebook_enabled, whatsapp_enabled
 
+def render_research_findings():
+    """Display research findings on main page."""
+    if st.session_state.current_outputs['research']:
+        st.markdown("---")
+        st.header("🔍 **Research Findings**")
+        
+        clean_research = clean_agent_response(st.session_state.current_outputs['research'])
+        
+        # Display full research content (no truncation)
+        st.markdown(f'<div class="content-box">{clean_research}</div>', unsafe_allow_html=True)
+        
+        # Clear Research Button (clears current research + outputs only)
+        if st.button("🗑️ Clear Current Research & Outputs", key="clear_current_research", use_container_width=True):
+            st.session_state.current_outputs = {'research': '', 'linkedin': '', 'facebook': '', 'whatsapp': ''}
+            st.rerun()
+
 def render_platform_outputs(linkedin_enabled=True, facebook_enabled=True, whatsapp_enabled=True):
-    """Display the platform content outputs."""
-    if any(st.session_state.current_outputs.values()):
+    """Display the platform content outputs in new order."""
+    # Check if any platform content exists
+    platform_outputs_exist = (
+        (st.session_state.current_outputs['linkedin'] and linkedin_enabled) or
+        (st.session_state.current_outputs['facebook'] and facebook_enabled) or
+        (st.session_state.current_outputs['whatsapp'] and whatsapp_enabled)
+    )
+    
+    if platform_outputs_exist:
         st.markdown("---")
         st.header("📱 **Platform Content Ready**")
         
-        # LinkedIn Card
+        # 1. LinkedIn Article (First)
         if st.session_state.current_outputs['linkedin'] and linkedin_enabled:
             linkedin_content = format_platform_content(st.session_state.current_outputs['linkedin'], "linkedin")
             if linkedin_content:
@@ -60,12 +83,12 @@ def render_platform_outputs(linkedin_enabled=True, facebook_enabled=True, whatsa
                 
                 st.markdown(f'<div class="content-box">{linkedin_content}</div>', unsafe_allow_html=True)
                 
-                # Copy button - FIXED: Show raw content for copying
+                # Copy button
                 if st.button("📋 Copy LinkedIn Article", key="copy_linkedin", use_container_width=True):
                     st.code(linkedin_content, language="markdown")
                     st.success("✅ LinkedIn article copied! Paste into LinkedIn")
         
-        # Facebook Card
+        # 2. Facebook Post (Second)
         if st.session_state.current_outputs['facebook'] and facebook_enabled:
             facebook_content = format_platform_content(st.session_state.current_outputs['facebook'], "facebook")
             if facebook_content:
@@ -84,7 +107,7 @@ def render_platform_outputs(linkedin_enabled=True, facebook_enabled=True, whatsa
                     st.code(facebook_content, language="markdown")
                     st.success("✅ Facebook post copied! Paste into Facebook")
         
-        # WhatsApp Card
+        # 3. WhatsApp Message (Third)
         if st.session_state.current_outputs['whatsapp'] and whatsapp_enabled:
             whatsapp_content = format_platform_content(st.session_state.current_outputs['whatsapp'], "whatsapp")
             if whatsapp_content:
