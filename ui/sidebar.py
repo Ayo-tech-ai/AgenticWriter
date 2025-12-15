@@ -43,7 +43,7 @@ def render_sidebar():
                 clean_research = clean_agent_response(st.session_state.current_outputs['research'])
                 # Remove the context.state assignment line for display
                 clean_research = re.sub(r'context\.state\[.*?\].*', '', clean_research)
-                st.text_area("Research Summary", clean_research[:2000] + "..." if len(clean_research) > 2000 else clean_research, height=250, key="research_display")
+                st.text_area("Research Summary", clean_research[:2000] + "..." if len(clean_research) > 2000 else clean_research, height=250")
             else:
                 st.info("No research generated yet. Run a topic first.")
         
