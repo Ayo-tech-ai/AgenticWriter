@@ -1,4 +1,4 @@
-# utils/session_manager.py
+# utils/session_manager.py - UPDATED
 import streamlit as st
 
 def initialize_session_state():
@@ -16,6 +16,13 @@ def initialize_session_state():
             'facebook': '',
             'whatsapp': ''
         }
+    # Add new session state variables
+    if 'secrets_initialized' not in st.session_state:
+        st.session_state.secrets_initialized = False
+    if 'initialize_clicked' not in st.session_state:
+        st.session_state.initialize_clicked = False
+    if 'example_topic' not in st.session_state:
+        st.session_state.example_topic = ""
 
 def clear_session_state():
     """Clear all session state except initialization."""
