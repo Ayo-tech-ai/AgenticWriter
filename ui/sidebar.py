@@ -1,7 +1,5 @@
-# ui/sidebar.py - UPDATED
+# ui/sidebar.py - SIMPLIFIED (no research display)
 import streamlit as st
-import re
-from utils.formatters import clean_agent_response
 from config.constants import EXAMPLE_TOPICS
 
 def render_sidebar():
@@ -10,7 +8,7 @@ def render_sidebar():
         # Only show manual API inputs if secrets weren't loaded
         if not st.session_state.get('secrets_initialized', True):
             st.markdown("### ⚙️ **Manual API Configuration**")
-            st.caption("(Secrets not loaded)")
+            st.caption("(Secrets not loaded - using manual input)")
             
             # API Keys - create once with unique keys
             google_api_key = st.text_input(
@@ -39,26 +37,12 @@ def render_sidebar():
                 st.session_state.initialize_clicked = True
             
             st.markdown("---")
+        else:
+            # Show status when using secrets
+            st.markdown("### ⚙️ **API Status**")
+            st.markdown('<div class="success-box">✅ <strong>Using API Keys from Secrets</strong><br>Agents ready</div>', unsafe_allow_html=True)
+            st.markdown("---")
         
-        # Research Output Section - FIXED: Proper string handling and no key for auto-update
-        with st.expander("🔍 **View Research Findings**", expanded=False):
-            if st.session_state.current_outputs['research']:
-                clean_research = clean_agent_response(st.session_state.current_outputs['research'])
-                # Remove the context.state assignment line for display
-                clean_research = re.sub(r'context\.state\[.*?\].*', '', clean_research)
-                
-                # FIXED: Proper string concatenation
-                if len(clean_research) > 2000:
-                    display_text = clean_research[:2000] + "..."
-                else:
-                    display_text = clean_research
-                
-                # FIXED: Removed key parameter so it updates automatically
-                st.text_area("Research Summary", display_text, height=250)
-            else:
-                st.info("No research generated yet. Run a topic first.")
-        
-        st.markdown("---")
         st.markdown("### 💡 **Example Topics**")
         
         for example in EXAMPLE_TOPICS:
@@ -83,9 +67,8 @@ def render_sidebar():
             </div>
             """, unsafe_allow_html=True)
         
-        # Clear button - FIXED: Better clearing logic
-        if st.button("🗑️ **Clear All**", use_container_width=True, key="clear_button"):
-            # Clear ALL outputs including research
-            st.session_state.current_outputs = {'research': '', 'linkedin': '', 'facebook': '', 'whatsapp': ''}
+        # Clear All button (clears everything including history)
+        if st.button("🗑️ **Clear All (Full Reset)**", use_container_width=True, key="clear_all_button"):
             st.session_state.pipeline_history = []
+            st.session_state.current_outputs = {'research': '', 'linkedin': '', 'facebook': '', 'whatsapp': ''}
             st.rerun()
