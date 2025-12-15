@@ -1,4 +1,4 @@
-# main.py - Main orchestration file
+# main.py - UPDATED with fixes
 import streamlit as st
 import os
 import asyncio
@@ -8,7 +8,7 @@ import nest_asyncio
 nest_asyncio.apply()
 
 # Import from modules
-from utils.session_manager import initialize_session_state, clear_session_state
+from utils.session_manager import initialize_session_state
 from utils.formatters import clean_agent_response
 from ui.sidebar import render_sidebar
 from ui.main_content import render_main_content, render_platform_outputs, render_history, render_footer
@@ -30,12 +30,50 @@ st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 # Initialize session state
 initialize_session_state()
 
-# Render sidebar
+# ==========================================
+# AUTO-INITIALIZE AGENTS FROM SECRETS
+# ==========================================
+if not st.session_state.get('agents_initialized', False):
+    try:
+        # Try to get API keys from Streamlit Secrets
+        google_api_key = st.secrets.get("GOOGLE_GEMINI_API_KEY", "")
+        groq_api_key = st.secrets.get("GROQ_API_KEY", "")
+        
+        if google_api_key and groq_api_key:
+            # Set API keys in environment
+            os.environ["GOOGLE_API_KEY"] = google_api_key
+            os.environ["GROQ_API_KEY"] = groq_api_key
+            
+            # Create pipeline
+            pipeline_agent = create_multi_platform_pipeline()
+            
+            # Create runner
+            runner = InMemoryRunner(agent=pipeline_agent)
+            
+            # Store in session state
+            st.session_state.runner = runner
+            st.session_state.agents_initialized = True
+            st.session_state.secrets_initialized = True
+            
+            # Show success message
+            st.sidebar.markdown('<div class="success-box">✅ <strong>Auto-initialized from Secrets!</strong><br>Agents ready to use</div>', unsafe_allow_html=True)
+        else:
+            st.session_state.secrets_initialized = False
+            st.sidebar.warning("⚠️ API keys not found in Secrets. Use manual input below.")
+            
+    except Exception as e:
+        st.session_state.secrets_initialized = False
+        st.sidebar.warning(f"⚠️ Could not load secrets: {str(e)}")
+
+# ==========================================
+# MANUAL OVERRIDE SECTION
+# ==========================================
+# Render sidebar for manual override if needed
 render_sidebar()
 
-# Handle initialization when button is clicked
+# Handle manual initialization when button is clicked
 if st.session_state.get('initialize_clicked', False):
-    # Get API keys from session state
+    # Get API keys from session state (manual input)
     google_api_key = st.session_state.get('google_api_key_input', '')
     groq_api_key = st.session_state.get('groq_api_key_input', '')
     
@@ -47,12 +85,6 @@ if st.session_state.get('initialize_clicked', False):
                     os.environ["GOOGLE_API_KEY"] = google_api_key
                     os.environ["GROQ_API_KEY"] = groq_api_key
                     
-                    # Import ADK components (ensure they're imported after setting keys)
-                    from google.adk.agents import Agent, SequentialAgent
-                    from google.adk.models.google_llm import Gemini
-                    from google.adk.models.lite_llm import LiteLlm
-                    from google.adk.tools.google_search_tool import GoogleSearchTool
-                    
                     # Create pipeline
                     pipeline_agent = create_multi_platform_pipeline()
                     
@@ -62,6 +94,7 @@ if st.session_state.get('initialize_clicked', False):
                     # Store in session state
                     st.session_state.runner = runner
                     st.session_state.agents_initialized = True
+                    st.session_state.secrets_initialized = True
                     
                     st.markdown('<div class="success-box">✅ <strong>4 Agents Initialized!</strong><br>Research + 3 Platform Writers ready</div>', unsafe_allow_html=True)
                     
@@ -74,6 +107,9 @@ if st.session_state.get('initialize_clicked', False):
     # Clear the flag
     st.session_state.initialize_clicked = False
 
+# ==========================================
+# MAIN CONTENT AND GENERATION
+# ==========================================
 # Render main content
 research_topic, linkedin_enabled, facebook_enabled, whatsapp_enabled = render_main_content()
 
@@ -86,7 +122,7 @@ if st.button("🚀 **Generate All Platform Content**", type="primary", use_conta
     else:
         with st.spinner("🔍 Researching topic and creating platform content..."):
             try:
-                # Clear previous outputs
+                # FIXED: Clear ALL outputs BEFORE running pipeline
                 st.session_state.current_outputs = {'research': '', 'linkedin': '', 'facebook': '', 'whatsapp': ''}
                 
                 # Run pipeline
@@ -101,7 +137,7 @@ if st.button("🚀 **Generate All Platform Content**", type="primary", use_conta
                 finally:
                     loop.close()
                 
-                # Extract outputs by agent
+                # Extract outputs by agent - FIXED: Clean immediately
                 research_output = ""
                 linkedin_output = ""
                 facebook_output = ""
@@ -112,27 +148,27 @@ if st.button("🚀 **Generate All Platform Content**", type="primary", use_conta
                         content = str(event.content)
                         event_str = str(event).lower()
                         
-                        # Research agent
+                        # Research agent - FIXED: Clean immediately
                         if 'research_agent' in event_str or 'TOPIC:' in content:
-                            research_output = content
-                            st.session_state.current_outputs['research'] = content
+                            research_output = clean_agent_response(content)
+                            st.session_state.current_outputs['research'] = research_output
                         
-                        # LinkedIn agent
+                        # LinkedIn agent - FIXED: Clean immediately
                         elif 'linkedin_agent' in event_str or '#9jaai_farmer' in content.lower():
-                            linkedin_output = content
-                            st.session_state.current_outputs['linkedin'] = content
+                            linkedin_output = clean_agent_response(content)
+                            st.session_state.current_outputs['linkedin'] = linkedin_output
                         
-                        # Facebook agent
+                        # Facebook agent - FIXED: Clean immediately
                         elif 'facebook_agent' in event_str or 'read more' in content.lower():
-                            facebook_output = content
-                            st.session_state.current_outputs['facebook'] = content
+                            facebook_output = clean_agent_response(content)
+                            st.session_state.current_outputs['facebook'] = facebook_output
                         
-                        # WhatsApp agent
+                        # WhatsApp agent - FIXED: Clean immediately
                         elif 'whatsapp_agent' in event_str or '[link_' in content.lower():
-                            whatsapp_output = content
-                            st.session_state.current_outputs['whatsapp'] = content
+                            whatsapp_output = clean_agent_response(content)
+                            st.session_state.current_outputs['whatsapp'] = whatsapp_output
                 
-                # Add to history
+                # Add to history - FIXED: Store cleaned outputs
                 st.session_state.pipeline_history.append({
                     "topic": research_topic,
                     "timestamp": "Now",
