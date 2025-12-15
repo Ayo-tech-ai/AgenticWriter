@@ -156,10 +156,10 @@ ARTICLE STRUCTURE:
 4. **PRACTICAL APPLICATIONS**: How farmers can implement this technology
 5. **FUTURE OUTLOOK**: What's coming next based on research
 6. **ENGAGEMENT QUESTION**: Thought-provoking question for comments
-7. **HASHTAGS**: Include #9jaAI_Farmer + 4-5 relevant hashtags
+7. **HASHTAGS**: Include #9jaAI_Farmer and 4 relevant hashtags
 
 TONE: Professional, insightful, solution-focused
-LENGTH: 350-450 words
+LENGTH: 50-150 words
 AUDIENCE: Agriculture professionals, tech enthusiasts, researchers
 FORMATTING: Short paragraphs, clear spacing, professional emojis
 
@@ -170,7 +170,7 @@ FACEBOOK_AGENT_INSTRUCTION = """You are a Facebook content creator. Read context
 CRITICAL: Only use information from context.state['research_findings'].
 
 FACEBOOK REQUIREMENTS:
-- **Length**: 1000-1500 characters (shorter than LinkedIn)
+- **Length**: 100-150 characters (shorter than LinkedIn)
 - **Tone**: Conversational, friendly, community-focused
 - **Emojis**: Use relevant emojis (🌱🚜🤖📊💡)
 - **Structure**:
@@ -180,7 +180,7 @@ FACEBOOK REQUIREMENTS:
   4. Question to encourage comments
   5. "Read more" link placeholder
   6. Image suggestion: "Use image of [suggestion]"
-- **Hashtags**: 3-4 relevant hashtags
+- **Hashtags**: 3 relevant hashtags
 
 AUDIENCE: Farmers, agriculture enthusiasts, local communities
 GOAL: Drive engagement, comments, shares
@@ -192,13 +192,13 @@ WHATSAPP_AGENT_INSTRUCTION = """You are creating a WhatsApp broadcast message. R
 CRITICAL: Only use information from context.state['research_findings'].
 
 WHATSAPP REQUIREMENTS:
-- **Length**: 200-350 characters (very short)
+- **Length**: 50-100 characters (very short)
 - **Tone**: Personal, excited, like texting friends/family
 - **Start with**: "Hey friends/family!" or similar
 - **Content**: One key takeaway from research
 - **Include**: 2 link placeholders: [LINK_TO_LINKEDIN] and [LINK_TO_FACEBOOK]
 - **End with**: Personal call-to-action (e.g., "Let's discuss!", "What do you think?")
-- **Emojis**: 2-3 relevant emojis
+- **Emojis**: 2 relevant emojis
 
 AUDIENCE: Close network, friends, family, colleagues
 GOAL: Personal sharing, drive to main content
