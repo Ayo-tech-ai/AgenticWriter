@@ -9,18 +9,31 @@ def render_sidebar():
     with st.sidebar:
         st.markdown("### ⚙️ **API Configuration**")
         
-        # API Keys
+        # API Keys - create once with unique keys
         google_api_key = st.text_input(
             "**Google Gemini API Key:**",
             type="password",
-            help="Get from: https://aistudio.google.com/app/apikeys"
+            help="Get from: https://aistudio.google.com/app/apikeys",
+            key="sidebar_google_key"  # Unique key
         )
         
         groq_api_key = st.text_input(
             "**Groq API Key:**",
             type="password",
-            help="Get from: https://console.groq.com/keys"
+            help="Get from: https://console.groq.com/keys",
+            key="sidebar_groq_key"  # Unique key
         )
+        
+        # Store keys in session state
+        if google_api_key:
+            st.session_state.google_api_key_input = google_api_key
+        if groq_api_key:
+            st.session_state.groq_api_key_input = groq_api_key
+        
+        # Initialize button - just sets a flag for main.py to handle
+        if st.button("🚀 **Initialize All Agents**", type="primary", use_container_width=True):
+            # Set a flag that main.py will check
+            st.session_state.initialize_clicked = True
         
         st.markdown("---")
         
@@ -30,7 +43,7 @@ def render_sidebar():
                 clean_research = clean_agent_response(st.session_state.current_outputs['research'])
                 # Remove the context.state assignment line for display
                 clean_research = re.sub(r'context\.state\[.*?\].*', '', clean_research)
-                st.text_area("Research Summary", clean_research[:2000] + "..." if len(clean_research) > 2000 else clean_research, height=250)
+                st.text_area("Research Summary", clean_research[:2000] + "..." if len(clean_research) > 2000 else clean_research, height=250, key="research_display")
             else:
                 st.info("No research generated yet. Run a topic first.")
         
@@ -38,7 +51,7 @@ def render_sidebar():
         st.markdown("### 💡 **Example Topics**")
         
         for example in EXAMPLE_TOPICS:
-            if st.button(example, use_container_width=True):
+            if st.button(example, use_container_width=True, key=f"example_{example}"):
                 # Extract topic without emoji
                 topic = example.split(" ", 1)[1] if " " in example else example
                 st.session_state.example_topic = topic
@@ -59,22 +72,9 @@ def render_sidebar():
             <strong>Runs Completed:</strong> {len(st.session_state.pipeline_history)}
             </div>
             """, unsafe_allow_html=True)
-
-def get_api_keys():
-    """Get API keys from sidebar inputs."""
-    with st.sidebar:
-        google_api_key = st.text_input(
-            "**Google Gemini API Key:**",
-            type="password",
-            key="google_api_key_input",
-            help="Get from: https://aistudio.google.com/app/apikeys"
-        )
         
-        groq_api_key = st.text_input(
-            "**Groq API Key:**",
-            type="password",
-            key="groq_api_key_input",
-            help="Get from: https://console.groq.com/keys"
-        )
-    
-    return google_api_key, groq_api_key
+        # Clear button
+        if st.button("🗑️ **Clear All**", use_container_width=True, key="clear_button"):
+            st.session_state.pipeline_history = []
+            st.session_state.current_outputs = {'research': '', 'linkedin': '', 'facebook': '', 'whatsapp': ''}
+            st.rerun()
