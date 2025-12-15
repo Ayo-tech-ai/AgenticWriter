@@ -1,4 +1,4 @@
-# ui/main_content.py
+# ui/main_content.py - Minor update
 import streamlit as st
 from utils.formatters import format_platform_content, clean_agent_response
 from config.constants import FOOTER_HTML
@@ -23,18 +23,19 @@ def render_main_content():
         "**Enter agriculture technology topic:**",
         value=default_topic,
         placeholder="e.g., 'AI for soil health monitoring' or 'IoT in Nigerian agriculture'",
-        help="Focus on agriculture technology topics for best results"
+        help="Focus on agriculture technology topics for best results",
+        key="main_research_input"  # Added unique key
     )
     
     # Platform selection
     st.markdown("### 🌐 **Platform Selection**")
     col1, col2, col3 = st.columns(3)
     with col1:
-        linkedin_enabled = st.checkbox("LinkedIn Article", value=True)
+        linkedin_enabled = st.checkbox("LinkedIn Article", value=True, key="linkedin_check")
     with col2:
-        facebook_enabled = st.checkbox("Facebook Post", value=True)
+        facebook_enabled = st.checkbox("Facebook Post", value=True, key="facebook_check")
     with col3:
-        whatsapp_enabled = st.checkbox("WhatsApp Message", value=True)
+        whatsapp_enabled = st.checkbox("WhatsApp Message", value=True, key="whatsapp_check")
     
     return research_topic, linkedin_enabled, facebook_enabled, whatsapp_enabled
 
@@ -48,18 +49,18 @@ def render_platform_outputs(linkedin_enabled=True, facebook_enabled=True, whatsa
         if st.session_state.current_outputs['linkedin'] and linkedin_enabled:
             linkedin_content = format_platform_content(st.session_state.current_outputs['linkedin'], "linkedin")
             if linkedin_content:
-                st.markdown("""
+                st.markdown(f"""
                 <div class="platform-card linkedin">
                     <div class="platform-header">
                         <h3 class="platform-title">🌐 LinkedIn Article</h3>
-                        <span class="platform-stats">{:,} chars</span>
+                        <span class="platform-stats">{{:,}} chars</span>
                     </div>
                 </div>
                 """.format(len(linkedin_content)), unsafe_allow_html=True)
                 
                 st.markdown(f'<div class="content-box">{linkedin_content}</div>', unsafe_allow_html=True)
                 
-                # Copy button
+                # Copy button - FIXED: Show raw content for copying
                 if st.button("📋 Copy LinkedIn Article", key="copy_linkedin", use_container_width=True):
                     st.code(linkedin_content, language="markdown")
                     st.success("✅ LinkedIn article copied! Paste into LinkedIn")
@@ -68,11 +69,11 @@ def render_platform_outputs(linkedin_enabled=True, facebook_enabled=True, whatsa
         if st.session_state.current_outputs['facebook'] and facebook_enabled:
             facebook_content = format_platform_content(st.session_state.current_outputs['facebook'], "facebook")
             if facebook_content:
-                st.markdown("""
+                st.markdown(f"""
                 <div class="platform-card facebook">
                     <div class="platform-header">
                         <h3 class="platform-title">👍 Facebook Post</h3>
-                        <span class="platform-stats">{:,} chars</span>
+                        <span class="platform-stats">{{:,}} chars</span>
                     </div>
                 </div>
                 """.format(len(facebook_content)), unsafe_allow_html=True)
@@ -87,11 +88,11 @@ def render_platform_outputs(linkedin_enabled=True, facebook_enabled=True, whatsa
         if st.session_state.current_outputs['whatsapp'] and whatsapp_enabled:
             whatsapp_content = format_platform_content(st.session_state.current_outputs['whatsapp'], "whatsapp")
             if whatsapp_content:
-                st.markdown("""
+                st.markdown(f"""
                 <div class="platform-card whatsapp">
                     <div class="platform-header">
                         <h3 class="platform-title">💬 WhatsApp Message</h3>
-                        <span class="platform-stats">{:,} chars</span>
+                        <span class="platform-stats">{{:,}} chars</span>
                     </div>
                 </div>
                 """.format(len(whatsapp_content)), unsafe_allow_html=True)
@@ -109,7 +110,7 @@ def render_history():
         st.header("📚 **Content History**")
         
         for i, entry in enumerate(reversed(st.session_state.pipeline_history)):
-            with st.expander(f"📄 {entry['topic'][:40]}... ({entry['timestamp']})"):
+            with st.expander(f"📄 {entry['topic'][:40]}... ({entry['timestamp']})", key=f"history_{i}"):
                 hist_col1, hist_col2, hist_col3 = st.columns(3)
                 
                 with hist_col1:
