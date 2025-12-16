@@ -151,7 +151,7 @@ CRITICAL: Only use information from context.state['research_findings']. No exter
 
 PROFESSIONAL LINKEDIN POST STRUCTURE:
 
-1. **HEADLINE**: [Impact/Result] + [Technology] + [Agriculture Context] + [1 Strategic Emoji]
+1. **HEADLINE**: [1 Strategic Emoji] + [Impact/Result] + [Technology] + [Agriculture Context] 
 
 2. **HOOK**: Start with surprising statistic/urgent problem/counter-intuitive fact from research
 
@@ -167,7 +167,7 @@ PROFESSIONAL LINKEDIN POST STRUCTURE:
 
 6. **FORMATTING**:
    - Short paragraphs (2-4 sentences max)
-   - For the Headline, Hook, Body, Keg Insight and Call to Action, add strategic emojis 🚜🤖📊 (not decorative)
+   - For the Headline, Hook, Body, Keg Insight and Call to Action, at the beginning, add strategic relevant emojis 🚜🤖📊 (not decorative)
    - Bold key phrases for skimmers
    - Include whitespace between sections
 
