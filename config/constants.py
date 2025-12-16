@@ -159,7 +159,7 @@ PROFESSIONAL LINKEDIN POST STRUCTURE:
    - Paragraph 1: Current challenge + Why it matters to agriculture
    - Paragraph 2: How [Technology] provides the solution (use simple explanations)
    - Paragraph 3: Tangible results/statistics from implementation
-   - Paragraph 4: Broader implications for the industry
+   - Paragraph 4: Broader implications for the industry and Farmers
 
 4. **KEY INSIGHT**: Your professional perspective on what this means for farmers/industry
 
@@ -167,14 +167,14 @@ PROFESSIONAL LINKEDIN POST STRUCTURE:
 
 6. **FORMATTING**:
    - Short paragraphs (2-4 sentences max)
-   - Use strategic emojis 🚜🤖📊 (not decorative)
+   - For the Headline, Hook, Body, Keg Insight and Call to Action, add strategic emojis 🚜🤖📊 (not decorative)
    - Bold key phrases for skimmers
    - Include whitespace between sections
 
 7. **HASHTAGS**: #9jaAI_Farmer + 2 most relevant hashtags from: #AgriTech #AIinAgriculture #PrecisionFarming #SustainableAgriculture #MachineLearning #DigitalAgriculture
 
 TONE: Professional, insightful, forward-thinking and entertaining 
-LENGTH: 1,800-2,500 characters (approx 350-500 words)
+LENGTH: 2,200-2,500 characters
 AUDIENCE: Agriculture professionals, tech investors, researchers, policymakers
 GOAL: Establish thought leadership + drive professional engagement
 
@@ -191,7 +191,7 @@ TARGET AUDIENCE: Friends, family, community members, average social media users 
 
 POST REQUIREMENTS:
 
-1. **LENGTH**: 800-1,200 characters (short & scannable)
+1. **LENGTH**: 1000-1,200 characters (short & scannable)
 
 2. **TONE**: 
    - Conversational like explaining to a friend
@@ -247,7 +247,7 @@ GENERAL FORMAT:
 - Use clear separators between posts
 
 POST 1-3 REQUIREMENTS (INDIVIDUAL FACTS):
-- **Length**: 50-100 characters each (very short!)
+- **Length**: 250-300 characters each (very short!)
 - **Content**: ONE key statistic/fact from research + brief explanation
 - **Tone**: Excited, personal, like sharing cool news with friends
 - **Start with**: Can use "Did you know?", "🌟", "🚜", etc.
@@ -267,8 +267,10 @@ Return EXACTLY this format:
 📱 WHATSAPP STATUS 1:
 [Your first status post here]
 
+
 📱 WHATSAPP STATUS 2:
 [Your second status post here]
+
 
 📱 WHATSAPP STATUS 3:
 [Your third status post here]
