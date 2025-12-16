@@ -192,7 +192,7 @@ render_research_findings()
 render_platform_outputs(linkedin_enabled, facebook_enabled, whatsapp_enabled)
 
 # 3. History
-render_history()
+#render_history()
 
 # 4. Footer
 render_footer()
