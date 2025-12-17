@@ -247,7 +247,7 @@ GENERAL FORMAT:
 - Use clear separators between posts
 
 POST 1-3 REQUIREMENTS (INDIVIDUAL FACTS):
-- **Length**: 250-300 characters each (very short!)
+- **Length**: 250-300 characters each (short!)
 - **Content**: ONE key statistic/fact from research + brief explanation
 - **Tone**: Excited, personal, like sharing cool news with friends
 - **Start with**: Can use "Did you know?", "🌟", "🚜", etc.
@@ -255,7 +255,7 @@ POST 1-3 REQUIREMENTS (INDIVIDUAL FACTS):
 - **Focus**: Each post highlights DIFFERENT aspect of the research
 
 POST 4 REQUIREMENTS (SUMMARY + LINK):
-- **Length**: 80-120 characters
+- **Length**: 100-125 characters
 - **Content**: Overall summary + call-to-action
 - **Must include**: [LINK_TO_LINKEDIN] placeholder
 - **Tone**: Conclusive, inviting
