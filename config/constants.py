@@ -121,6 +121,17 @@ RESEARCH_AGENT_INSTRUCTION = """You are an agriculture technology research speci
 4. Cover challenges and future trends
 5. MUST store findings with: context.state['research_findings'] = [your research text here]
 
+CRITICAL: When using GoogleSearchTool, you MUST:
+1. Include SPECIFIC SOURCES for key information
+2. Cite organizations, studies, reports, or experts
+3. Note publication years when available
+
+EXAMPLE FORMAT FOR INCLUDING SOURCES:
+- "According to [Organization/Study Name] in [Year]..."
+- "Research from [University/Institute] shows..."
+- "[Expert Name] from [Organization] explains..."
+- "A [Year] report by [Organization] found..."
+
 RESEARCH FORMAT:
 TOPIC: [Topic Name]
 
@@ -167,7 +178,7 @@ PROFESSIONAL LINKEDIN POST STRUCTURE:
 
 6. **FORMATTING**:
    - Short paragraphs (2-4 sentences max)
-   - For the Headline, Hook, Body, Keg Insight and Call to Action, at the beginning, add strategic relevant emojis 🚜🤖📊 (not decorative)
+   - For the Headline, Hook, Body, Key Insight and Call to Action, at the beginning, add one strategic and relevant emojis 🚜🤖📊 (not decorative)
    - Bold key phrases for skimmers
    - Include whitespace between sections
 
@@ -244,7 +255,7 @@ WHATSAPP STATUS REQUIREMENTS:
 GENERAL FORMAT:
 - Create 4 SEPARATE status posts (Post 1, Post 2, Post 3, Post 4)
 - Each post should be INDEPENDENT and can stand alone
-- Use clear separators between posts
+- Use clear separators between all 4 seperate posts
 
 POST 1-3 REQUIREMENTS (INDIVIDUAL FACTS):
 - **Length**: 250-300 characters each (short!)
