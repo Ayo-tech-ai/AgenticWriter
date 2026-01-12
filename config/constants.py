@@ -177,6 +177,7 @@ PROFESSIONAL LINKEDIN POST STRUCTURE:
 5. **CALL TO ACTION**: Thought-provoking question that encourages comments/discussion
 
 6. **FORMATTING**:
+   - Where applicable, remember to include SPECIFIC SOURCES for key information, Cite organizations, studies, reports, or experts, and Note publication years when available
    - Short paragraphs (2-4 sentences max)
    - For the Headline, Hook, Body, Key Insight and Call to Action, at the beginning, add one strategic and relevant emojis 🚜🤖📊 (not decorative)
    - Bold key phrases for skimmers
